@@ -390,7 +390,6 @@ services:
           - PHP_UPSTREAM_PORT=${APACHE_PHP_UPSTREAM_PORT}
           - PHP_UPSTREAM_TIMEOUT=${APACHE_PHP_UPSTREAM_TIMEOUT}
           - DOCUMENT_ROOT=${APACHE_DOCUMENT_ROOT}
-          - APACHE_INSTALL_HTTP2=${APACHE_INSTALL_HTTP2}
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
         - ${APACHE_HOST_LOG_PATH}:/var/log/apache2
@@ -421,7 +420,7 @@ services:
     minio:
       build: ./minio
       volumes:
-        - ${DATA_PATH_HOST}/minio/data:/export
+        - minio:/export
         - ${DATA_PATH_HOST}/minio/config:/root/.minio
       ports:
         - "${MINIO_PORT}:9000"
@@ -1767,3 +1766,14 @@ services:
         - ${DATA_PATH_HOST}/tomcat/logs:/usr/local/tomcat/logs
       # restart: always
 
+### localstack ####################################################
+    localstack:
+      image: localstack/localstack-light
+      ports:
+        - 4566:4566
+      environment:
+        - SERVICES=sns
+        - DEFAULT_REGION=ap-northeast-1
+        - DEBUG=1
+      networks:
+        - backend
